@@ -1,2 +1,2 @@
-# ZigBee-Network
-Sensor network using zigbee modules
+# API mode xBee network
+Sensor network using xBee on API mode
