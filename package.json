@@ -1,0 +1,24 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Sensor network using xBee on API mode",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevingtzz/API-Mode-xBee-Network.git"
+  },
+  "author": "Kevin Gutierrez Gomez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevingtzz/API-Mode-xBee-Network/issues"
+  },
+  "homepage": "https://github.com/kevingtzz/API-Mode-xBee-Network#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "serialport": "^7.0.2",
+    "socket.io": "^2.1.1"
+  }
+}

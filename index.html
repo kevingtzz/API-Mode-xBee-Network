@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sensor Network</title>
+</head>
+
+<body>
+    <h1>Sensor data</h1>
+    <canvas id="sensor1"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+
+        let conter = 0
+        socket.on('arduino:data', (dataSerial) => {
+            console.log(dataSerial)
+            myChart.data.labels.push(conter)
+            myChart.data.datasets.forEach(dataset => {
+                dataset.data.push(dataSerial.value)
+            })
+            conter++
+            myChart.update()
+        })
+
+        var ctx = document.getElementById("sensor1").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["Serial"],
+                datasets: [{
+                    label: "Serial",
+                    backgroundColor: 'rgb(52,73,94)',
+                    borderColor: 'rgb(41,128,185)',
+                    data: []
+                }]
+            },
+            options: {}
+        });
+    </script>
+</body>
+
+</html>
