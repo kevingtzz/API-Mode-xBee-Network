@@ -5,6 +5,8 @@ byte trash[50];
 int i;
 char data;
 String dato = "OK";
+int sensor = A0;
+int temperature;
 
 void setup() {
   Serial3.begin(115200);
@@ -13,16 +15,20 @@ void setup() {
 
 void loop()
 {
-  //  delay(10);//small delay to let Serial buffer load
-  const char msg[] = "21\n";//message to be sent, \n is needed so receiver may fully capture the message
-  chat(1); //calls chat method, sent to router
-  delay(1000);
-
+  temperature = analogRead(sensor); 
+  send(temperature/4);
+  delay(500);
+  Serial.print(temperature/4);
 }
 
 //Define los ultimos 3 bytes de la direccion MAC destino
 
 void router() {
+  Serial3.write(byte(0x00)); 
+  Serial3.write(byte(0x13));
+  Serial3.write(byte(0xA2));
+  Serial3.write(byte(0x00));
+  Serial3.write(byte(0x40));
   Serial3.write(byte(0xDB));
   Serial3.write(byte(0x48));
   Serial3.write(byte(0xBB));
@@ -130,4 +136,57 @@ byte convertir_mensaje(byte text [], int aux1) {
   //Serial.println(mensaje);
 
   return mensaje;
+}
+
+void send(int data) {
+  String message = String(data);
+
+  Serial3.write(byte(0x7E));
+
+  Serial3.write(byte(0x00));
+  Serial3.write(byte(message.length() + 14));
+
+  Serial3.write(byte(0x10));
+  Serial3.write(byte(0x00));  
+
+  router();
+
+  Serial3.write(byte(0xFF));
+  Serial3.write(byte(0xFE));
+
+  Serial3.write(byte(0x00));
+  Serial3.write(byte(0x00));
+
+  write_message(message);
+
+  Serial3.write(byte(byte(0xFF)
+                   - (byte(0x10)
+                    + byte(0x00)
+                    + byte(0x00)
+                    + byte(0x13)
+                    + byte(0xA2)
+                    + byte(0x00)
+                    + byte(0x40)
+                    + byte(0xDB)
+                    + byte(0x48)
+                    + byte(0xBB)
+                    + byte(0xFF)
+                    + byte(0xFE)
+                    + byte(0x00)
+                    + byte(0x00)
+                    + message_check(message))));
+}
+
+void write_message(String message) {
+  for(int i = 0; i < message.length(); i++) {
+    Serial3.write(byte(message[i]));
+  }
+}
+
+byte message_check(String message) {
+  byte cs = 0;
+  for(int i = 0; i < message.length(); i++) {
+    cs += byte(message[i]);
+  }
+  return cs;
 }
